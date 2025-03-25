@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>PowerShell编写STAR-CCM+自动排队计算脚本 | AndrewMoa的知识分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="25&#x2F;03&#x2F;2025  以前用STAR-CCM+在Windows工作站做计算的时候（没钱，公司舍不得上超算……），有时候一晚上要提交十几二十个计算任务（瞎卷ㄟ( ▔, ▔ )ㄏ），当然不可能十几个任务全都一起跑（机器遭不住），也不可能全程盯着它跑一个个手动提交（人遭不住）。几年前用PowerShell编写了这个简易的排队计算的模板，在这里分享给大家。 1234567891011">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PowerShell编写STAR-CCM+自动排队计算脚本">
+<meta property="og:url" content="http://example.com/2025/03/26/CFD/PowerShell%E7%BC%96%E5%86%99STAR-CCM+%E8%87%AA%E5%8A%A8%E6%8E%92%E9%98%9F%E8%AE%A1%E7%AE%97%E8%84%9A%E6%9C%AC/index.html">
+<meta property="og:site_name" content="AndrewMoa的知识分享">
+<meta property="og:description" content="25&#x2F;03&#x2F;2025  以前用STAR-CCM+在Windows工作站做计算的时候（没钱，公司舍不得上超算……），有时候一晚上要提交十几二十个计算任务（瞎卷ㄟ( ▔, ▔ )ㄏ），当然不可能十几个任务全都一起跑（机器遭不住），也不可能全程盯着它跑一个个手动提交（人遭不住）。几年前用PowerShell编写了这个简易的排队计算的模板，在这里分享给大家。 1234567891011">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-25T17:27:23.618Z">
+<meta property="article:modified_time" content="2025-03-25T17:27:23.618Z">
+<meta property="article:author" content="Andrew Moa">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="AndrewMoa的知识分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">AndrewMoa的知识分享</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-CFD/PowerShell编写STAR-CCM+自动排队计算脚本" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/26/CFD/PowerShell%E7%BC%96%E5%86%99STAR-CCM+%E8%87%AA%E5%8A%A8%E6%8E%92%E9%98%9F%E8%AE%A1%E7%AE%97%E8%84%9A%E6%9C%AC/" class="article-date">
+  <time class="dt-published" datetime="2025-03-25T17:27:23.618Z" itemprop="datePublished">2025-03-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      PowerShell编写STAR-CCM+自动排队计算脚本
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>25&#x2F;03&#x2F;2025</p>
+<hr>
+<p>以前用STAR-CCM+在Windows工作站做计算的时候（没钱，公司舍不得上超算……），有时候一晚上要提交十几二十个计算任务（瞎卷ㄟ( ▔, ▔ )ㄏ），当然不可能十几个任务全都一起跑（机器遭不住），也不可能全程盯着它跑一个个手动提交（人遭不住）。几年前用PowerShell编写了这个简易的排队计算的模板，在这里分享给大家。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$title</span> = <span class="string">&quot;STAR-CCM+ 19.06.009-r8&quot;</span>	<span class="comment"># 窗口标题，怎么填随你喜欢</span></span><br><span class="line"><span class="variable">$host</span>.ui.RawUI.WindowTitle = <span class="variable">$title</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$STARCCM_PATH</span> = <span class="string">&quot;D:\XXX\Siemens\19.06.009-R8\STAR-CCM+19.06.009-R8\star\lib\win64\clang17.0vc14.2-r8\lib&quot;</span>	<span class="comment"># 填写本机STAR-CCM+的安装绝对路径</span></span><br><span class="line"><span class="variable">$env:path</span> += <span class="string">&quot;;<span class="variable">$STARCCM_PATH</span>&quot;</span></span><br><span class="line"><span class="variable">$run_dir</span> = <span class="variable">$pwd</span></span><br><span class="line"><span class="variable">$thread_number</span> = <span class="number">32</span>	<span class="comment"># 填写本机的CPU核心数</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$Array</span> = <span class="built_in">Get-ChildItem</span> <span class="literal">-Path</span> <span class="variable">$run_dir</span> <span class="literal">-Name</span> <span class="string">&quot;*.sim&quot;</span></span><br><span class="line"><span class="variable">$n</span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$item</span> <span class="keyword">in</span> <span class="variable">$Array</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$n</span> += <span class="number">1</span></span><br><span class="line">    <span class="variable">$sub_dir</span> = <span class="variable">$n</span>.ToString() + <span class="string">&quot;_&quot;</span> + <span class="variable">$item</span>.Substring(<span class="number">0</span>,<span class="variable">$item</span>.Length<span class="literal">-4</span>)</span><br><span class="line">    mkdir <span class="variable">$sub_dir</span></span><br><span class="line">    <span class="built_in">mv</span> <span class="variable">$item</span> <span class="variable">$sub_dir</span></span><br><span class="line">    <span class="built_in">cd</span> <span class="variable">$sub_dir</span></span><br><span class="line">    <span class="variable">$host</span>.ui.RawUI.WindowTitle = <span class="variable">$title</span> + <span class="string">&quot; - &quot;</span> + <span class="variable">$item</span> + <span class="string">&quot; - &quot;</span> + <span class="variable">$n</span> + <span class="string">&quot;/&quot;</span> + <span class="variable">$Array</span>.Count</span><br><span class="line">    <span class="variable">$log</span> = <span class="variable">$item</span> + <span class="string">&quot;.log&quot;</span></span><br><span class="line">    starccm+ <span class="variable">$item</span> <span class="literal">-batch</span> run <span class="literal">-np</span> <span class="variable">$thread_number</span> <span class="literal">-mpi</span> ms | <span class="built_in">tee</span> <span class="variable">$log</span></span><br><span class="line">    <span class="built_in">cd</span> <span class="variable">$run_dir</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>把以上命令行以文本格式保存为<code>.ps1</code>脚本文件，和要提交计算的<code>.sim</code>文件放到同一个文件夹，然后通过终端运行这个脚本。会自动统计排队任务数，将计算的.sim文件转移至新建子文件夹，同时生成<code>.log</code>日志文件，也可以在输出窗口中监控运行情况。计算完成后关闭终端即可。</p>
+<p>美中不足的是，不支持宏文件，也不支持临时增加或插入算例。</p>
+<p>各位可以针对自己的情况，做一些针对性的调整。</p>
+<p>如果碰到输出窗口和日志文件中有乱码的情况，多半是你的PowerShell不支持UTF-8所导致。参考以下方法<a href="%5BWindowsPowerShell%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%5D(https://www.azfum.com/archives/ki3syg5b/)">^1</a>，在PowerShell窗口中输入：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置文件一般位于：C:\Users\用户名\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1</span></span><br><span class="line"><span class="comment"># 如果没有就新建一个</span></span><br><span class="line">notepad <span class="variable">$PROFILE</span> <span class="comment"># 编辑配置文件</span></span><br></pre></td></tr></table></figure>
+
+<p>在配置文件中增加以下内容，保存退出：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$OutputEncoding</span> = [<span class="type">console</span>]::InputEncoding = [<span class="type">console</span>]::OutputEncoding = [<span class="type">Text.UTF8Encoding</span>]::UTF8</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/03/26/CFD/PowerShell%E7%BC%96%E5%86%99STAR-CCM+%E8%87%AA%E5%8A%A8%E6%8E%92%E9%98%9F%E8%AE%A1%E7%AE%97%E8%84%9A%E6%9C%AC/" data-id="cm8orjgqg0008pw09fxek4dah" data-title="PowerShell编写STAR-CCM+自动排队计算脚本" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/26/Linux/Hyper-V%E5%AE%89%E8%A3%85Ubuntu24.04/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Hyper-V安装Ubuntu24.04
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/26/Ansa/Ansa%E8%96%84%E6%9D%BF%E7%BD%91%E6%A0%BC%E5%BB%BA%E6%A8%A1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Ansa薄板网格建模</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">三月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E5%AE%89%E8%A3%85Ansys2025R1/">Ubuntu24.04安装Ansys2025R1</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E6%90%AD%E5%BB%BASamba%E6%9C%8D%E5%8A%A1%E5%99%A8/">Ubuntu24.04搭建Samba服务器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85SIMULIA2024/">Ubuntu安装SIMULIA2024</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">Hyper-V虚拟交换机NAT设置静态IP</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/">Ubuntu安装Slurm</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Andrew Moa<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

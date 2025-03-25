@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Ubuntu安装Slurm | AndrewMoa的知识分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="20&#x2F;03&#x2F;2025  Slurm，和PBS、LSF一样，超算上常用的任务管理系统。Slurm优点是开源免费、活跃度很高，近几年国内新兴的超算平台几乎都提供了Slurm作为主要的任务管理系统。PBS开源后活跃度低得可怜，更新到最新系统后安装一直出问题，提了issue也不见答复。LSF有版权风险，国内应用也不多，属于很少见的类型。至于命令和脚本，这三家都大差不差，学会了其中一家另">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu安装Slurm">
+<meta property="og:url" content="http://example.com/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/index.html">
+<meta property="og:site_name" content="AndrewMoa的知识分享">
+<meta property="og:description" content="20&#x2F;03&#x2F;2025  Slurm，和PBS、LSF一样，超算上常用的任务管理系统。Slurm优点是开源免费、活跃度很高，近几年国内新兴的超算平台几乎都提供了Slurm作为主要的任务管理系统。PBS开源后活跃度低得可怜，更新到最新系统后安装一直出问题，提了issue也不见答复。LSF有版权风险，国内应用也不多，属于很少见的类型。至于命令和脚本，这三家都大差不差，学会了其中一家另">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-25T17:27:29.908Z">
+<meta property="article:modified_time" content="2025-03-25T17:27:29.908Z">
+<meta property="article:author" content="Andrew Moa">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="AndrewMoa的知识分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">AndrewMoa的知识分享</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Linux/Ubuntu安装Slurm" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/" class="article-date">
+  <time class="dt-published" datetime="2025-03-25T17:27:29.908Z" itemprop="datePublished">2025-03-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Ubuntu安装Slurm
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>20&#x2F;03&#x2F;2025</p>
+<hr>
+<p>Slurm，和PBS、LSF一样，超算上常用的任务管理系统。Slurm优点是开源免费、活跃度很高，近几年国内新兴的超算平台几乎都提供了Slurm作为主要的任务管理系统。PBS开源后活跃度低得可怜，更新到最新系统后安装一直出问题，提了issue也不见答复。LSF有版权风险，国内应用也不多，属于很少见的类型。至于命令和脚本，这三家都大差不差，学会了其中一家另外的也是手到擒来。</p>
+<p>Ubuntu安装Slurm还是十分简单的，重要的工具基本都编译好了，直接apt安装即可，其他依赖项会自动安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install slurmd	<span class="comment"># 安装计算节点守护进程</span></span><br><span class="line"><span class="built_in">sudo</span> apt install slurmctld <span class="comment"># 安装管理节点守护进程</span></span><br></pre></td></tr></table></figure>
+
+<p>Slurm需要有一个专门的用户用于通信等操作，这个用户的默认用户名是<code>slurm</code>，上面的命令其实已经自动在Ubuntu中生成了<code>slurm</code>用户，可以通过下面的命令验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lastlog | grep slurm</span><br></pre></td></tr></table></figure>
+
+<p>如果Ubuntu没有生成<code>slurm</code>用户，可以用以下命令生成：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> useradd slurm</span><br></pre></td></tr></table></figure>
+
+<p>Slurm配置文件主要在 <code>/etc/slurm/</code> 目录下，主配置文件：<code>/etc/slurm/slurm.conf</code>，我们需要生成配置文件。官方提供了辅助生成配置文件的工具：<a target="_blank" rel="noopener" href="https://slurm.schedmd.com/configurator.html">Slurm Configuration Tool</a> 。</p>
+<p>根据网页内容提示，填写配置文件其中一些关键部分：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ClusterName=Cluster <span class="comment"># 集群命名，任意英文和数字组合</span></span><br><span class="line"></span><br><span class="line">SlurmctldHost=dell-vm <span class="comment"># 管理节点，这里填本机名称</span></span><br><span class="line"></span><br><span class="line">NodeName=dell-vm <span class="comment"># 计算节点，同样填本机名称</span></span><br><span class="line">PartitionName=debug <span class="comment"># 计算节点所在分区，默认为debug</span></span><br><span class="line">CPUs=32 <span class="comment"># 计算节点CPU核心数，根据实际情况填写</span></span><br><span class="line">Sockets=1 <span class="comment"># CPU插槽数，根据实际情况填写</span></span><br><span class="line">CoresPerSocket＝32 <span class="comment"># 每插槽核心数，根据实际情况填写</span></span><br><span class="line">ThreadsPerCore=1 <span class="comment"># 每核心线程数，建议为1，不建议打开超线程</span></span><br><span class="line"></span><br><span class="line">SlurmUser=slurm <span class="comment"># 默认为slurm用户，不建议改成root用户</span></span><br><span class="line"></span><br><span class="line">StateSaveLocation=/var/spool/slurmctld <span class="comment"># 管理节点守护进程的存储文件夹，默认即可</span></span><br><span class="line">SlurmdSpoolDir=/var/spool/slurmd <span class="comment"># 计算点守护进程的存储文件夹，默认即可</span></span><br></pre></td></tr></table></figure>
+<p>更多解释可以参考中科大网站上的信息。<sup>(1)</p>
+<p>网页内容填写完成后点击最下面的<code>Submit</code>，把显示的配置文件模板拷贝下来，存到<code>/etc/slurm/slurm.conf</code>文件中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> vim /etc/slurm/slurm.conf	<span class="comment"># 复制粘贴到这个文件里</span></span><br></pre></td></tr></table></figure>
+
+<p>生成守护进程的读写文件夹：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> /var/spool/slurmd <span class="comment"># Ubuntu下提示文件夹已存在，无视它</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> /var/spool/slurmctld</span><br></pre></td></tr></table></figure>
+
+<p>启动Slurm的服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> slurmd</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> slurmctld</span><br><span class="line"><span class="built_in">sudo</span> systemctl start slurmd</span><br><span class="line"><span class="built_in">sudo</span> systemctl start slurmctld</span><br></pre></td></tr></table></figure>
+
+<p>查看Slurm守护进程的启动状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl status slurmd</span><br><span class="line"><span class="built_in">sudo</span> systemctl status slurmctld</span><br></pre></td></tr></table></figure>
+
+<p><code>slurmd</code>守护进程启动成功，但<code>slurmctld</code>守护进程启动报错，查看报错信息如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(null): _log_init: Unable to open logfile `/var/log/slurmctld.log&#x27;: Permission denied</span><br><span class="line">slurmctld: fatal: Incorrect permissions on state save loc: /var/spool/slurmctld</span><br></pre></td></tr></table></figure>
+
+<p>为解决这个问题，最简单办法是将<code>SlurmUser</code>改为<code>root</code>。这里采用另外一种方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">touch</span> /var/log/slurmctld.log <span class="comment"># 创建slurmctld守护进程的日志文件</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chown</span> slurm /var/log/slurmctld.log <span class="comment"># 将日志文件所有者改为slurm用户</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chown</span> -R slurm /var/spool/slurmctld <span class="comment"># 将slurmctld守护进程读写文件夹的所有者改为slurm用户</span></span><br></pre></td></tr></table></figure>
+
+<p>重新启动<code>slurmctld</code>服务即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl restart slurmctld</span><br></pre></td></tr></table></figure>
+
+<p>Slurm脚本和命令行，国内的用户可以参考交大编写的用户手册，比较全面，这里就不一一列举了。<sup>(2) </p>
+<p>以下是一些常用Slurm命令：</p>
+<ul>
+<li><p>当前节点的配置可以通过以下命令获取：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slurmd -C</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看当前集群的节点状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sinfo -N</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看指定节点信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scontrol show node dell-vm <span class="comment"># dell-vm是计算节点的名称</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看当前用户提交的任务信息，通常只显示正在排队和运行中的任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">squeue</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>提交计算任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbatch jobscript.slurm <span class="comment"># jobscript.slurm为用户编写的计算脚本，可不带后缀名</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看和修改任务状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scontrol show job <span class="variable">$&#123;JOB_ID&#125;</span> <span class="comment"># 查看指定任务的信息，$&#123;JOB_ID&#125;对应squeue显示的第一列的任务编号</span></span><br><span class="line">scontrol hold <span class="variable">$&#123;JOB_ID&#125;</span> <span class="comment"># 暂停$&#123;JOB_ID&#125;</span></span><br><span class="line">scontrol release <span class="variable">$&#123;JOB_ID&#125;</span> <span class="comment"># 恢复$&#123;JOB_ID&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>取消计算任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scancel <span class="variable">$&#123;JOB_ID&#125;</span> <span class="comment"># 取消$&#123;JOB_ID&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<p><sup>(1) <a target="_blank" rel="noopener" href="https://scc.ustc.edu.cn/hmli/doc/linux/slurm-install/slurm-install.html#id17">Slurm资源管理与作业调度系统安装配置</a></p>
+<p><sup>(2) <a target="_blank" rel="noopener" href="https://docs.hpc.sjtu.edu.cn/job/slurm.html">Slurm 作业调度系统</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/" data-id="cm8orjgqj000epw09cgc316r4" data-title="Ubuntu安装Slurm" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Hyper-V虚拟交换机NAT设置静态IP
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/26/Linux/Ubuntu%E6%8C%82%E8%BD%BDWindows%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E5%A4%B9(cifs+nfs)/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Ubuntu挂载Windows共享文件夹(cifs+nfs)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">三月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E5%AE%89%E8%A3%85Ansys2025R1/">Ubuntu24.04安装Ansys2025R1</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E6%90%AD%E5%BB%BASamba%E6%9C%8D%E5%8A%A1%E5%99%A8/">Ubuntu24.04搭建Samba服务器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85SIMULIA2024/">Ubuntu安装SIMULIA2024</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">Hyper-V虚拟交换机NAT设置静态IP</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/">Ubuntu安装Slurm</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Andrew Moa<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hyper-V虚拟交换机NAT设置静态IP | AndrewMoa的知识分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="21&#x2F;03&#x2F;2025  前面讲过用NAT+端口映射的方式访问虚拟机，但使用过程中发现一个问题：每次宿主机重启之后，默认的Default SwitchIP地址都会变更，造成虚拟机无法访问网关进而无法联网。 为了保证虚拟机联网，每次重启开机都要手动设置Default Switch对应适配器的IP地址，非常不便。下面是参考微软官方文档给出的解决方案。 这里前面的步骤可以通过图形用户界">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hyper-V虚拟交换机NAT设置静态IP">
+<meta property="og:url" content="http://example.com/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/index.html">
+<meta property="og:site_name" content="AndrewMoa的知识分享">
+<meta property="og:description" content="21&#x2F;03&#x2F;2025  前面讲过用NAT+端口映射的方式访问虚拟机，但使用过程中发现一个问题：每次宿主机重启之后，默认的Default SwitchIP地址都会变更，造成虚拟机无法访问网关进而无法联网。 为了保证虚拟机联网，每次重启开机都要手动设置Default Switch对应适配器的IP地址，非常不便。下面是参考微软官方文档给出的解决方案。 这里前面的步骤可以通过图形用户界">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/38530a4ee6eaabf98448a647c0446d0c.png">
+<meta property="og:image" content="http://example.com/images/2d9b503b6087be2acffc63498abc5977.png">
+<meta property="og:image" content="http://example.com/images/e4140c00e7140a6ad234b58fa208caa9.png">
+<meta property="og:image" content="http://example.com/images/0dede2ea198412fb98f352185b8c299c.png">
+<meta property="og:image" content="http://example.com/images/03ac4a6c4f91bb45fc4fd1d30483119b.png">
+<meta property="article:published_time" content="2025-03-25T17:27:29.911Z">
+<meta property="article:modified_time" content="2025-03-25T17:34:46.945Z">
+<meta property="article:author" content="Andrew Moa">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/38530a4ee6eaabf98448a647c0446d0c.png">
+  
+    <link rel="alternate" href="/atom.xml" title="AndrewMoa的知识分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">AndrewMoa的知识分享</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Linux/Hyper-V虚拟交换机NAT设置静态IP" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/" class="article-date">
+  <time class="dt-published" datetime="2025-03-25T17:27:29.911Z" itemprop="datePublished">2025-03-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Hyper-V虚拟交换机NAT设置静态IP
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>21&#x2F;03&#x2F;2025</p>
+<hr>
+<p>前面讲过用NAT+端口映射的方式访问虚拟机，但使用过程中发现一个问题：每次宿主机重启之后，默认的<code>Default Switch</code>IP地址都会变更，造成虚拟机无法访问网关进而无法联网。</p>
+<p>为了保证虚拟机联网，每次重启开机都要手动设置<code>Default Switch</code>对应适配器的IP地址，非常不便。下面是参考<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/user-guide/setup-nat-network">微软官方文档</a>给出的解决方案。</p>
+<p>这里前面的步骤可以通过图形用户界面去实现，首先新建一个内部的虚拟交换机：<br><img src="/../../images/38530a4ee6eaabf98448a647c0446d0c.png" alt="38530a4ee6eaabf98448a647c0446d0c.png"></p>
+<p>命名虚拟交换机，记住它，后面会用到。确定新建：<br><img src="/../../images/2d9b503b6087be2acffc63498abc5977.png" alt="2d9b503b6087be2acffc63498abc5977.png"></p>
+<p>在Windows网络适配器中找到新建的虚拟机适配器，将IP地址改成虚拟机设置的网关地址，子网掩码也改成和虚拟机设置的一致：<br><img src="/../../images/e4140c00e7140a6ad234b58fa208caa9.png" alt="e4140c00e7140a6ad234b58fa208caa9.png"></p>
+<p>下面用管理员权限打开PowerShell，通过以下命令行查看是否已有NAT网络：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-NetNat</span></span><br></pre></td></tr></table></figure>
+
+<p>因为一个机器上只能有一个NAT网络，因此要先移除现有的NAT网络：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-NetNat</span> | <span class="built_in">Remove-NetNat</span></span><br></pre></td></tr></table></figure>
+
+<p>设置NAT网络：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># InLan为NAT网络名称，172.25.64.0为子网网关IP地址，/24为子网前缀长度</span></span><br><span class="line"><span class="built_in">New-NetNat</span> <span class="literal">-Name</span> InLan <span class="literal">-InternalIPInterfaceAddressPrefix</span> <span class="number">172.25</span>.<span class="number">64.0</span>/<span class="number">24</span></span><br></pre></td></tr></table></figure>
+<p>关于子网网关，和上面设置的虚拟机适配器的IP地址即虚拟机的网关地址处在同一个网段即可，末尾设置为0；本例上面虚拟机的网关地址为172.25.64.1，那子网网关地址一般设置为172.25.64.0。子网前缀即子网掩码，关于子网前缀长度，通俗来讲，像2xx.2xx.2xx.0这种都是24位，2xx.2xx.2xx.2xx这种为32位。</p>
+<p>设置完成后通过Get-NetNat查看是否有NAT网络信息：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Name                             : InLan</span><br><span class="line">ExternalIPInterfaceAddressPrefix :</span><br><span class="line">InternalIPInterfaceAddressPrefix : <span class="number">172.25</span>.<span class="number">64.0</span>/<span class="number">24</span></span><br><span class="line">IcmpQueryTimeout                 : <span class="number">30</span></span><br><span class="line">TcpEstablishedConnectionTimeout  : <span class="number">1800</span></span><br><span class="line">TcpTransientConnectionTimeout    : <span class="number">120</span></span><br><span class="line">TcpFilteringBehavior             : AddressDependentFiltering</span><br><span class="line">UdpFilteringBehavior             : AddressDependentFiltering</span><br><span class="line">UdpIdleSessionTimeout            : <span class="number">120</span></span><br><span class="line">UdpInboundRefresh                : False</span><br><span class="line">Store                            : Local</span><br><span class="line">Active                           : True</span><br></pre></td></tr></table></figure>
+
+<p>这样新的NAT网络就配置好了，在虚拟机设置中更换成新设置的虚拟交换机。<br><img src="/../../images/0dede2ea198412fb98f352185b8c299c.png" alt="0dede2ea198412fb98f352185b8c299c.png"></p>
+<p>再登录虚拟机，手动设置DNS即可（不理解为什么不能通过网关自动获取DNS，也许是BUG……），否则虚拟机无法访问外网。<br><img src="/../../images/03ac4a6c4f91bb45fc4fd1d30483119b.png" alt="03ac4a6c4f91bb45fc4fd1d30483119b.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/" data-id="cm8orjgqh000apw097sdb8vys" data-title="Hyper-V虚拟交换机NAT设置静态IP" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85SIMULIA2024/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Ubuntu安装SIMULIA2024
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Ubuntu安装Slurm</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">三月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E5%AE%89%E8%A3%85Ansys2025R1/">Ubuntu24.04安装Ansys2025R1</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E6%90%AD%E5%BB%BASamba%E6%9C%8D%E5%8A%A1%E5%99%A8/">Ubuntu24.04搭建Samba服务器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85SIMULIA2024/">Ubuntu安装SIMULIA2024</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">Hyper-V虚拟交换机NAT设置静态IP</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/">Ubuntu安装Slurm</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Andrew Moa<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

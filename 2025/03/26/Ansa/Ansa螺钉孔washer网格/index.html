@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Ansa螺钉孔washer网格 | AndrewMoa的知识分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="28&#x2F;02&#x2F;2025   使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。 但默认设置生成的网格螺钉孔貌似都没有按washer处理。 有几种方法，其一是通过几何处理手动添加Zone Cut的方式，这种方法手工处理工作量太大，不推荐 另一种方法需要手动Reconstruct网格，首先在网格参数设置里设置孔的特征参数。 返回Mesh里，Re">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ansa螺钉孔washer网格">
+<meta property="og:url" content="http://example.com/2025/03/26/Ansa/Ansa%E8%9E%BA%E9%92%89%E5%AD%94washer%E7%BD%91%E6%A0%BC/index.html">
+<meta property="og:site_name" content="AndrewMoa的知识分享">
+<meta property="og:description" content="28&#x2F;02&#x2F;2025   使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。 但默认设置生成的网格螺钉孔貌似都没有按washer处理。 有几种方法，其一是通过几何处理手动添加Zone Cut的方式，这种方法手工处理工作量太大，不推荐 另一种方法需要手动Reconstruct网格，首先在网格参数设置里设置孔的特征参数。 返回Mesh里，Re">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/ff86c5fd4ac5cc0624c9013d21a1dab5.png">
+<meta property="og:image" content="http://example.com/images/6ea45853b136275e0c8325e7b4a47341.png">
+<meta property="og:image" content="http://example.com/images/363c5b51b1b6eab2ba3b44bd907c10dd.png">
+<meta property="og:image" content="http://example.com/images/6db3f7dddb8aaa1cea878f831db1abc0.png">
+<meta property="og:image" content="http://example.com/images/5489ac8734b83c3b95fbac196237c402.png">
+<meta property="article:published_time" content="2025-03-25T17:27:19.213Z">
+<meta property="article:modified_time" content="2025-03-25T17:35:09.810Z">
+<meta property="article:author" content="Andrew Moa">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/ff86c5fd4ac5cc0624c9013d21a1dab5.png">
+  
+    <link rel="alternate" href="/atom.xml" title="AndrewMoa的知识分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">AndrewMoa的知识分享</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Ansa/Ansa螺钉孔washer网格" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/26/Ansa/Ansa%E8%9E%BA%E9%92%89%E5%AD%94washer%E7%BD%91%E6%A0%BC/" class="article-date">
+  <time class="dt-published" datetime="2025-03-25T17:27:19.213Z" itemprop="datePublished">2025-03-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Ansa螺钉孔washer网格
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>28&#x2F;02&#x2F;2025 </p>
+<hr>
+<p>使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。<br><img src="/../../images/ff86c5fd4ac5cc0624c9013d21a1dab5.png" alt="ff86c5fd4ac5cc0624c9013d21a1dab5.png"></p>
+<p>但默认设置生成的网格螺钉孔貌似都没有按washer处理。<br><img src="/../../images/6ea45853b136275e0c8325e7b4a47341.png" alt="6ea45853b136275e0c8325e7b4a47341.png"></p>
+<p>有几种方法，其一是通过几何处理手动添加<code>Zone Cut</code>的方式，这种方法手工处理工作量太大，不推荐</p>
+<p>另一种方法需要手动<code>Reconstruct</code>网格，首先在网格参数设置里设置孔的特征参数。<br><img src="/../../images/363c5b51b1b6eab2ba3b44bd907c10dd.png" alt="363c5b51b1b6eab2ba3b44bd907c10dd.png"><br><img src="/../../images/6db3f7dddb8aaa1cea878f831db1abc0.png" alt="6db3f7dddb8aaa1cea878f831db1abc0.png"></p>
+<p>返回<code>Mesh</code>里，<code>Reconstrust</code>就有了。<br><img src="/../../images/5489ac8734b83c3b95fbac196237c402.png" alt="5489ac8734b83c3b95fbac196237c402.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/03/26/Ansa/Ansa%E8%9E%BA%E9%92%89%E5%AD%94washer%E7%BD%91%E6%A0%BC/" data-id="cm8orjgqf0006pw09bxkocwef" data-title="Ansa螺钉孔washer网格" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/26/Ansa/Ansa%E6%8A%BD%E4%B8%AD%E9%9D%A2%E5%8A%9F%E8%83%BD/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Ansa抽中面功能
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/26/Ansa/Ansa%E7%BD%91%E6%A0%BC%E8%B4%A8%E9%87%8F%E8%AE%BE%E7%BD%AE/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Ansa网格质量设置</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">三月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E5%AE%89%E8%A3%85Ansys2025R1/">Ubuntu24.04安装Ansys2025R1</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E6%90%AD%E5%BB%BASamba%E6%9C%8D%E5%8A%A1%E5%99%A8/">Ubuntu24.04搭建Samba服务器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85SIMULIA2024/">Ubuntu安装SIMULIA2024</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">Hyper-V虚拟交换机NAT设置静态IP</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/">Ubuntu安装Slurm</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Andrew Moa<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

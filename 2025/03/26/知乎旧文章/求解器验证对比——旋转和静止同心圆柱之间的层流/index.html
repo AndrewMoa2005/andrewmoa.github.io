@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>求解器验证对比——旋转和静止同心圆柱之间的层流 | AndrewMoa的知识分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="08&#x2F;14&#x2F;2021  本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。  [TOC]  1. 问题描述如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。     来源 Ansys验证算例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="求解器验证对比——旋转和静止同心圆柱之间的层流">
+<meta property="og:url" content="http://example.com/2025/03/26/%E7%9F%A5%E4%B9%8E%E6%97%A7%E6%96%87%E7%AB%A0/%E6%B1%82%E8%A7%A3%E5%99%A8%E9%AA%8C%E8%AF%81%E5%AF%B9%E6%AF%94%E2%80%94%E2%80%94%E6%97%8B%E8%BD%AC%E5%92%8C%E9%9D%99%E6%AD%A2%E5%90%8C%E5%BF%83%E5%9C%86%E6%9F%B1%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B1%82%E6%B5%81/index.html">
+<meta property="og:site_name" content="AndrewMoa的知识分享">
+<meta property="og:description" content="08&#x2F;14&#x2F;2021  本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。  [TOC]  1. 问题描述如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。     来源 Ansys验证算例">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/20210814-1-1.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-1.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-2.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-3.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-4.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-5.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-6.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-7.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-8.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-9.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-10.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-11.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-12.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-13.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-14.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-15.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-16.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-17.png">
+<meta property="og:image" content="http://example.com/images/20210814-2-18.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-1.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-2.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-3.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-4.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-5.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-6.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-7.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-8.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-9.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-10.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-11.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-12.png">
+<meta property="og:image" content="http://example.com/images/20210814-3-13.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-1.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-2.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-3.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-4.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-5.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-6.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-7.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-8.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-9.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-10.png">
+<meta property="og:image" content="http://example.com/images/20210814-4-11.png">
+<meta property="og:image" content="http://example.com/images/20210814-5-1.png">
+<meta property="og:image" content="http://example.com/images/20210814-5-2.png">
+<meta property="og:image" content="http://example.com/images/20210814-5-3.png">
+<meta property="og:image" content="http://example.com/images/20210814-5-4.png">
+<meta property="og:image" content="http://example.com/images/20210814-5-5.png">
+<meta property="og:image" content="http://example.com/images/20210814-5-6.png">
+<meta property="og:image" content="http://example.com/images/20210814-5-7.png">
+<meta property="og:image" content="http://example.com/images/20210814-5-8.png">
+<meta property="og:image" content="http://example.com/images/20210814-6-1.png">
+<meta property="article:published_time" content="2025-03-25T17:27:14.452Z">
+<meta property="article:modified_time" content="2025-03-25T17:33:50.907Z">
+<meta property="article:author" content="Andrew Moa">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/20210814-1-1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="AndrewMoa的知识分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">AndrewMoa的知识分享</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-知乎旧文章/求解器验证对比——旋转和静止同心圆柱之间的层流" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/26/%E7%9F%A5%E4%B9%8E%E6%97%A7%E6%96%87%E7%AB%A0/%E6%B1%82%E8%A7%A3%E5%99%A8%E9%AA%8C%E8%AF%81%E5%AF%B9%E6%AF%94%E2%80%94%E2%80%94%E6%97%8B%E8%BD%AC%E5%92%8C%E9%9D%99%E6%AD%A2%E5%90%8C%E5%BF%83%E5%9C%86%E6%9F%B1%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B1%82%E6%B5%81/" class="article-date">
+  <time class="dt-published" datetime="2025-03-25T17:27:14.452Z" itemprop="datePublished">2025-03-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      求解器验证对比——旋转和静止同心圆柱之间的层流
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>08&#x2F;14&#x2F;2021</p>
+<hr>
+<p>本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。</p>
+<hr>
+<p>[TOC]</p>
+<hr>
+<h2 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1. 问题描述"></a>1. 问题描述</h2><p>如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。</p>
+<p><img src="/../../images/20210814-1-1.png" alt="20210814-1-1.png"></p>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>Ansys验证算例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>参考文献</td>
+<td>F. M. White. Viscous Fluid Flow. Section 3-2.3. McGraw-Hill Book Co., Inc.. New York, NY. 1991.</td>
+</tr>
+<tr>
+<td>物理模型</td>
+<td>层流，旋转壁面</td>
+</tr>
+</tbody></table>
+<p>流体物性参数、几何尺寸和边界条件如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th align="left">特征</th>
+<th>单位</th>
+<th>参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">流体密度</td>
+<td>kg&#x2F;m^3</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left">流体粘度</td>
+<td>kg&#x2F;m-s</td>
+<td>0.0002</td>
+</tr>
+<tr>
+<td align="left">内圆柱半径</td>
+<td>mm</td>
+<td>17.8</td>
+</tr>
+<tr>
+<td align="left">外圆柱半径</td>
+<td>mm</td>
+<td>46.28</td>
+</tr>
+<tr>
+<td align="left">内圆柱转速</td>
+<td>rad&#x2F;s</td>
+<td>1.0</td>
+</tr>
+</tbody></table>
+<p>本文所用求解器和输入模型如下。</p>
+<table>
+<thead>
+<tr>
+<th>求解器</th>
+<th>输入模型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ansys Fluent 2020R2</td>
+<td>VMFL001_rot_conc_cyl_2D.msh</td>
+</tr>
+<tr>
+<td>Ansys CFX 2020R2</td>
+<td>VMFL001_rot_conc_cyl_3D.msh</td>
+</tr>
+<tr>
+<td>Siemens STAR-CCM+ 2020.2.1(15.04.010-R8)</td>
+<td>VMFL001_rot_conc_cyl_2D.msh</td>
+</tr>
+<tr>
+<td>OpenFOAM v2006</td>
+<td>VMFL001_rot_conc_cyl_2D.msh</td>
+</tr>
+<tr>
+<td>SU2 v7.1.1</td>
+<td>VMFL001_rot_conc_cyl_2D.cgns</td>
+</tr>
+</tbody></table>
+<h2 id="2-Fluent验证"><a href="#2-Fluent验证" class="headerlink" title="2. Fluent验证"></a>2. Fluent验证</h2><h3 id="2-1-求解器设置"><a href="#2-1-求解器设置" class="headerlink" title="2.1 求解器设置"></a>2.1 求解器设置</h3><p>打开Fluent，选择2D求解器。网格数量较少，只用1个处理器核心运行。</p>
+<p><img src="/../../images/20210814-2-1.png" alt="20210814-2-1.png"></p>
+<p>导入网格模型VMFL001_rot_conc_cyl_2D.msh，如下所示。</p>
+<p><img src="/../../images/20210814-2-2.png" alt="20210814-2-2.png"></p>
+<p>更改物理模型，选择层流。</p>
+<p><img src="/../../images/20210814-2-3.png" alt="20210814-2-3.png"></p>
+<p>更改流体参数。将”air”重命名为”vmfl001”，密度1kg&#x2F;m3，粘度0.0002kg&#x2F;m-s。</p>
+<p><img src="/../../images/20210814-2-4.png" alt="20210814-2-4.png"></p>
+<p><img src="/../../images/20210814-2-5.png" alt="20210814-2-5.png"></p>
+<p>可以看到导入的periodic（id&#x3D;10）和shadow_periodic（id&#x3D;13）边界不是周期边界，需要在命令行窗口中输入<code>/mesh/modify-zones/make-periodic</code>命令，建立周期边界。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; /mesh/modify-zones/make-periodic</span><br><span class="line">Periodic zone [()] 10</span><br><span class="line">Shadow zone [()] 13</span><br><span class="line">Rotationally periodic? (if no, translationally) [yes] yes</span><br><span class="line">Create periodic zones? [yes] yes</span><br></pre></td></tr></table></figure>
+
+<p>更改innerwall（id&#x3D;11）边界为旋转壁面，设置如下。</p>
+<p><img src="/../../images/20210814-2-6.png" alt="20210814-2-6.png"></p>
+<p>求解器选择SIMPLE，如下所示。</p>
+<p><img src="/../../images/20210814-2-7.png" alt="20210814-2-7.png"></p>
+<p>收敛残差更改为1e-6，初始化。</p>
+<p><img src="/../../images/20210814-2-8.png" alt="20210814-2-8.png"></p>
+<p><img src="/../../images/20210814-2-9.png" alt="20210814-2-9.png"></p>
+<p>迭代步数800，求解并保存。</p>
+<p><img src="/../../images/20210814-2-10.png" alt="20210814-2-10.png"></p>
+<p><img src="/../../images/20210814-2-11.png" alt="20210814-2-11.png"></p>
+<h3 id="2-2-后处理"><a href="#2-2-后处理" class="headerlink" title="2.2 后处理"></a>2.2 后处理</h3><p>在半径20~35mm处建立4个点，坐标如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>x (m)</th>
+<th>y (m)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>point-1</td>
+<td>0.02</td>
+<td>0</td>
+</tr>
+<tr>
+<td>point-2</td>
+<td>0.025</td>
+<td>0</td>
+</tr>
+<tr>
+<td>point-3</td>
+<td>0.03</td>
+<td>0</td>
+</tr>
+<tr>
+<td>point-4</td>
+<td>0.035</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p><img src="/../../images/20210814-2-12.png" alt="20210814-2-12.png"></p>
+<p><img src="/../../images/20210814-2-13.png" alt="20210814-2-13.png"></p>
+<p>输出四个点的切向速度。</p>
+<p><img src="/../../images/20210814-2-14.png" alt="20210814-2-14.png"></p>
+<p>新建一条水平方向的直线，输出不同半径下的切向速度分布曲线。</p>
+<p><img src="/../../images/20210814-2-15.png" alt="20210814-2-15.png"></p>
+<p><img src="/../../images/20210814-2-16.png" alt="20210814-2-16.png"></p>
+<p><img src="/../../images/20210814-2-17.png" alt="20210814-2-17.png"></p>
+<p>将曲线点数据输出到文件中备用。</p>
+<p><img src="/../../images/20210814-2-18.png" alt="20210814-2-18.png"></p>
+<p>层流方程与Fluent计算结果误差对比。</p>
+<table>
+<thead>
+<tr>
+<th>半径 [mm]</th>
+<th>切向速度（理论值） [m&#x2F;s]</th>
+<th>切向速度（Fluent仿真结果）[m&#x2F;s]</th>
+<th>误差 [%]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20</td>
+<td>0.0151</td>
+<td>0.015027723</td>
+<td>0.48</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0.0105</td>
+<td>0.010464473</td>
+<td>0.34</td>
+</tr>
+<tr>
+<td>30</td>
+<td>0.0072</td>
+<td>0.0071237963</td>
+<td>1.06</td>
+</tr>
+<tr>
+<td>35</td>
+<td>0.0046</td>
+<td>0.0044973576</td>
+<td>2.23</td>
+</tr>
+</tbody></table>
+<h2 id="3-CFX验证"><a href="#3-CFX验证" class="headerlink" title="3. CFX验证"></a>3. CFX验证</h2><h3 id="3-1-求解器设置"><a href="#3-1-求解器设置" class="headerlink" title="3.1 求解器设置"></a>3.1 求解器设置</h3><p>启动CFX-Pre，新建算例，导入fluent网格文件VMFL001_rot_conc_cyl_3D.msh。</p>
+<p><img src="/../../images/20210814-3-1.png" alt="20210814-3-1.png"></p>
+<p>新建材料，命名为”vmfl001”。密度1 [kg m^-3]，动力粘度0.0002 [Pa s]。</p>
+<p><img src="/../../images/20210814-3-2.png" alt="20210814-3-2.png"></p>
+<p>新建流体域（Domain），命名为FLUID，网格区域（Location）选择FLUID。材料选择刚刚新建的vmfl001。关闭传换热方程，湍流方程选择None(Laminar)。</p>
+<p><img src="/../../images/20210814-3-3.png" alt="20210814-3-3.png"></p>
+<p><img src="/../../images/20210814-3-4.png" alt="20210814-3-4.png"></p>
+<p>在此流体域中新建边界，所对应的网格边界如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th>流体边界</th>
+<th>网格边界</th>
+<th>边界类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>INNERWALL</td>
+<td>INNERWALL</td>
+<td>Wall</td>
+</tr>
+<tr>
+<td>OUTERWALL</td>
+<td>OUTERWALL</td>
+<td>Wall</td>
+</tr>
+<tr>
+<td>SYMM 1</td>
+<td>SYMM 1</td>
+<td>Symmetry</td>
+</tr>
+<tr>
+<td>SYMM 2</td>
+<td>SYMM 2</td>
+<td>Symmetry</td>
+</tr>
+</tbody></table>
+<p>其中，INNERWALL指定为旋转壁面，如下图所示，角速度 1 [radian s^-1]。</p>
+<p><img src="/../../images/20210814-3-5.png" alt="20210814-3-5.png"></p>
+<p>新建交界面（Interfaces），命名为PERIODIC，如下图所示。</p>
+<p><img src="/../../images/20210814-3-6.png" alt="20210814-3-6.png"></p>
+<p>新建全局初始化（Global Initialization），直接确认，采用默认值即可。</p>
+<p><img src="/../../images/20210814-3-7.png" alt="20210814-3-7.png"></p>
+<p>更改求解器控制（Solver Control），最大迭代步数改为1000，残差类型改为MAX，收敛残差目标改为1e-6。</p>
+<p><img src="/../../images/20210814-3-8.png" alt="20210814-3-8.png"></p>
+<p>保存算例，输出.def文件。打开CFS-Solver Manager载入.def文件，求解器类型选择双精度，开始求解。</p>
+<p><img src="/../../images/20210814-3-9.png" alt="20210814-3-9.png"></p>
+<p>大概23步左右就收敛了。</p>
+<p><img src="/../../images/20210814-3-10.png" alt="20210814-3-10.png"></p>
+<h3 id="3-2-后处理"><a href="#3-2-后处理" class="headerlink" title="3.2 后处理"></a>3.2 后处理</h3><p>打开CFD-Post，载入求解完毕输出的结果文件。在半径20~35mm处建立4个点，如下表。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>x (m)</th>
+<th>y (m)</th>
+<th>z (m)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Point 1</td>
+<td>0.02</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Point 2</td>
+<td>0.025</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Point 3</td>
+<td>0.03</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Point 4</td>
+<td>0.035</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>建立如下4个表达式（Expressions），输出4个点的切向速度。</p>
+<table>
+<thead>
+<tr>
+<th>表达式名称</th>
+<th>表达式定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VelYOnPoint1</td>
+<td>maxVal(Velocity v)@Point 1</td>
+</tr>
+<tr>
+<td>VelYOnPoint2</td>
+<td>maxVal(Velocity v)@Point 2</td>
+</tr>
+<tr>
+<td>VelYOnPoint3</td>
+<td>maxVal(Velocity v)@Point 3</td>
+</tr>
+<tr>
+<td>VelYOnPoint4</td>
+<td>maxVal(Velocity v)@Point 4</td>
+</tr>
+</tbody></table>
+<p>新建Table，将4个点的半径和速度列出。</p>
+<p><img src="/../../images/20210814-3-11.png" alt="20210814-3-11.png"></p>
+<p>建立直线”Line 1”，如下图所示。</p>
+<p><img src="/../../images/20210814-3-12.png" alt="20210814-3-12.png"></p>
+<p>建立曲线图（Chart），“Data Series”中的”Location”选择刚刚建立的”Line 1”，”X Axis”中的“Variable”选择”X”，”Y Axis”中的“Variable”选择”Velocity v”，输出曲线如下图所示。将曲线数据导出到.csv文件中备用。</p>
+<p><img src="/../../images/20210814-3-13.png" alt="20210814-3-13.png"></p>
+<p>层流方程与CFX计算结果误差对比。</p>
+<table>
+<thead>
+<tr>
+<th>半径 [mm]</th>
+<th>切向速度（理论值） [m&#x2F;s]</th>
+<th>切向速度（CFX仿真结果）[m&#x2F;s]</th>
+<th>误差 [%]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20</td>
+<td>0.0151</td>
+<td>0.0150925</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0.0105</td>
+<td>0.0105287</td>
+<td>0.27</td>
+</tr>
+<tr>
+<td>30</td>
+<td>0.0072</td>
+<td>0.00718282</td>
+<td>0.24</td>
+</tr>
+<tr>
+<td>35</td>
+<td>0.0046</td>
+<td>0.00454726</td>
+<td>1.15</td>
+</tr>
+</tbody></table>
+<h2 id="4-STAR-CCM-验证"><a href="#4-STAR-CCM-验证" class="headerlink" title="4. STAR-CCM+验证"></a>4. STAR-CCM+验证</h2><h3 id="4-1-求解器设置"><a href="#4-1-求解器设置" class="headerlink" title="4.1 求解器设置"></a>4.1 求解器设置</h3><p>打开STAR-CCM+，由于网格数较少，进程选项可以选择串行，只用1个处理器核心进行求解。导入fluent网格文件VMFL001_rot_conc_cyl_2D.msh。</p>
+<p><img src="/../../images/20210814-4-1.png" alt="20210814-4-1.png"></p>
+<p>选择求解器物理模型，如下图所示。</p>
+<p><img src="/../../images/20210814-4-2.png" alt="20210814-4-2.png"></p>
+<p>将气体材料”Air”重命名为”vmfl001”，密度修改为1.0 kg&#x2F;m^3，动力粘度修改为2.0E-4 Pa-s。</p>
+<p><img src="/../../images/20210814-4-3.png" alt="20210814-4-3.png"></p>
+<p>展开流体区域中的”FLUID-7”，同时选中”PERIODIC”和”SHADOW_PERIODIC”边界，右键创建界面。新建的交界面拓扑改为”周期”，周期转换选择”旋转”，旋转轴指定改为”指定轴”，轴的方向为”[0.0, 0.0, 1.0]”。</p>
+<p><img src="/../../images/20210814-4-4.png" alt="20210814-4-4.png"></p>
+<p>在”工具”、”运动”中新建旋转运动，旋转轴方向[0.0, 0.0, 1.0]，旋转速率1.0 radian&#x2F;s。</p>
+<p><img src="/../../images/20210814-4-5.png" alt="20210814-4-5.png"></p>
+<p>将INNERWALL边界的参考坐标系指定选项更改为”局部参考坐标系”，边界参考坐标系指定选择刚刚新建的旋转运动的坐标系。</p>
+<p><img src="/../../images/20210814-4-6.png" alt="20210814-4-6.png"></p>
+<p>停止标准中的最大迭代步数默认为1000，运行求解并保存算例。</p>
+<p><img src="/../../images/20210814-4-7.png" alt="20210814-4-7.png"></p>
+<h3 id="4-2-后处理"><a href="#4-2-后处理" class="headerlink" title="4.2 后处理"></a>4.2 后处理</h3><p>在衍生零部件中新建4个探针点，如下表。</p>
+<p><img src="/../../images/20210814-4-8.png" alt="20210814-4-8.png"></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>x (m)</th>
+<th>y (m)</th>
+<th>z (m)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>p1</td>
+<td>0.02</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>p2</td>
+<td>0.025</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>p3</td>
+<td>0.03</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>p4</td>
+<td>0.035</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>同样地，在衍生零部件中新建等值面”y&#x3D;0”，如下图。</p>
+<p><img src="/../../images/20210814-4-9.png" alt="20210814-4-9.png"></p>
+<p>在”工具”、”表”中新建”XYZ内部表”，标量选择”[Velocity[j]]”，零部件选择新建的p1~p4四个点，邮件提取然后制表，显示4个点的切向速度。</p>
+<p><img src="/../../images/20210814-4-10.png" alt="20210814-4-10.png"></p>
+<p>在”绘图”中新建”XY绘图”，零部件选择新建的等值面”y&#x3D;0”，”Y类型”、”Y Type 1”中的场函数选择”[Velocity[j]]”，曲线图如下。将曲线数据导出到.csv文件中备用。</p>
+<p><img src="/../../images/20210814-4-11.png" alt="20210814-4-11.png"></p>
+<p>层流方程与STAR-CCM+计算结果误差对比。</p>
+<table>
+<thead>
+<tr>
+<th>半径 [mm]</th>
+<th>切向速度（理论值） [m&#x2F;s]</th>
+<th>切向速度（STAR-CCM+仿真结果）[m&#x2F;s]</th>
+<th>误差 [%]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20</td>
+<td>0.0151</td>
+<td>0.0153266630659337</td>
+<td>1.50</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0.0105</td>
+<td>0.0106689558311781</td>
+<td>1.61</td>
+</tr>
+<tr>
+<td>30</td>
+<td>0.0072</td>
+<td>0.00671828465572254</td>
+<td>6.69</td>
+</tr>
+<tr>
+<td>35</td>
+<td>0.0046</td>
+<td>0.004432094526565</td>
+<td>3.65</td>
+</tr>
+</tbody></table>
+<h2 id="5-OpenFOAM验证"><a href="#5-OpenFOAM验证" class="headerlink" title="5. OpenFOAM验证"></a>5. OpenFOAM验证</h2><h3 id="5-1-求解器设置"><a href="#5-1-求解器设置" class="headerlink" title="5.1 求解器设置"></a>5.1 求解器设置</h3><p>首先将官方自带案例中的simpleCar复制到当前目录下并重命名为vmfl001，这里用的是MSYS2作为命令行交互界面，执行以下命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> -r <span class="variable">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/simpleCar .</span><br><span class="line"><span class="built_in">mv</span> simpleCar vmfl001</span><br><span class="line"><span class="built_in">cd</span> vmfl001</span><br></pre></td></tr></table></figure>
+
+<p>将VMFL001_rot_conc_cyl_2D.msh文件复制到vmfl001文件夹中，执行以下命令，将fluent网格转换为OpenFOAM网格。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fluentMeshToFoam VMFL001_rot_conc_cyl_2D.msh</span><br></pre></td></tr></table></figure>
+
+<p>打开constant&#x2F;polyMesh&#x2F;boundary文件，修改如下，将”PERIODIC”和”SHADOW_PERIODIC”边界由壁面改为周期边界。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     <span class="number">2.0</span>;</span><br><span class="line">    format      ascii;</span><br><span class="line">    <span class="keyword">class</span>       <span class="title class_">polyBoundaryMesh</span>;</span><br><span class="line">    location    <span class="string">&quot;constant/polyMesh&quot;</span>;</span><br><span class="line">    object      boundary;</span><br><span class="line">&#125;</span><br><span class="line"><span class="number">5</span></span><br><span class="line">(</span><br><span class="line">    PERIODIC</span><br><span class="line">    &#123;</span><br><span class="line">        type            cyclicAMI;</span><br><span class="line">        inGroups        <span class="number">1</span>(wall);</span><br><span class="line">        nFaces          <span class="number">20</span>;</span><br><span class="line">        startFace       <span class="number">2320</span>;</span><br><span class="line">        matchTolerance  <span class="number">0.0001</span>;</span><br><span class="line">        transform       rotational;</span><br><span class="line">        <span class="built_in">rotationAxis</span>    (<span class="number">0</span> <span class="number">0</span> <span class="number">1</span>);</span><br><span class="line">        <span class="built_in">rotationCentre</span>  (<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>);</span><br><span class="line">        neighbourPatch  SHADOW_PERIODIC;</span><br><span class="line">    &#125;</span><br><span class="line">    INNERWALL</span><br><span class="line">    &#123;</span><br><span class="line">        type            wall;</span><br><span class="line">        inGroups        <span class="number">1</span>(wall);</span><br><span class="line">        nFaces          <span class="number">60</span>;</span><br><span class="line">        startFace       <span class="number">2340</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    OUTERWALL</span><br><span class="line">    &#123;</span><br><span class="line">        type            wall;</span><br><span class="line">        inGroups        <span class="number">1</span>(wall);</span><br><span class="line">        nFaces          <span class="number">60</span>;</span><br><span class="line">        startFace       <span class="number">2400</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    SHADOW_PERIODIC</span><br><span class="line">    &#123;</span><br><span class="line">        type            cyclicAMI;</span><br><span class="line">        inGroups        <span class="number">1</span>(wall);</span><br><span class="line">        nFaces          <span class="number">20</span>;</span><br><span class="line">        startFace       <span class="number">2460</span>;</span><br><span class="line">        matchTolerance  <span class="number">0.0001</span>;</span><br><span class="line">        transform       rotational;</span><br><span class="line">        <span class="built_in">rotationAxis</span>    (<span class="number">0</span> <span class="number">0</span> <span class="number">1</span>);</span><br><span class="line">        <span class="built_in">rotationCentre</span>  (<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>);</span><br><span class="line">        neighbourPatch  PERIODIC;</span><br><span class="line">    &#125;</span><br><span class="line">    frontAndBackPlanes</span><br><span class="line">    &#123;</span><br><span class="line">        type            empty;</span><br><span class="line">        inGroups        <span class="number">1</span>(empty);</span><br><span class="line">        nFaces          <span class="number">2400</span>;</span><br><span class="line">        startFace       <span class="number">2480</span>;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>删除vmfl001目录下的”Allrun”文件。删除vmfl001&#x2F;0目录下的”epsilon”、”k”和”nut”，只保留”p”和”U”。</p>
+<p>修改”p”文件如下。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     <span class="number">2.0</span>;</span><br><span class="line">    format      ascii;</span><br><span class="line">    <span class="keyword">class</span>       <span class="title class_">volScalarField</span>;</span><br><span class="line">    object      p;</span><br><span class="line">&#125;</span><br><span class="line">dimensions      [<span class="number">0</span> <span class="number">2</span> <span class="number">-2</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>];</span><br><span class="line">internalField   uniform <span class="number">0</span>;</span><br><span class="line">boundaryField</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;(INNERWALL|OUTERWALL)&quot;</span></span><br><span class="line">    &#123;</span><br><span class="line">        type            zeroGradient;</span><br><span class="line">    &#125;</span><br><span class="line">    frontAndBackPlanes</span><br><span class="line">    &#123;</span><br><span class="line">        type            empty;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="string">&quot;(PERIODIC|SHADOW_PERIODIC)&quot;</span></span><br><span class="line">    &#123;</span><br><span class="line">        type            cyclicAMI;</span><br><span class="line">        value           $internalField;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改”U”文件如下。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     <span class="number">2.0</span>;</span><br><span class="line">    format      ascii;</span><br><span class="line">    <span class="keyword">class</span>       <span class="title class_">volVectorField</span>;</span><br><span class="line">    object      U;</span><br><span class="line">&#125;</span><br><span class="line">dimensions      [<span class="number">0</span> <span class="number">1</span> <span class="number">-1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>];</span><br><span class="line"><span class="function">internalField   <span class="title">uniform</span> <span class="params">(<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>)</span></span>;</span><br><span class="line">boundaryField</span><br><span class="line">&#123;</span><br><span class="line">    INNERWALL</span><br><span class="line">    &#123;</span><br><span class="line">        type            rotatingWallVelocity;</span><br><span class="line">        <span class="built_in">axis</span>            (<span class="number">0</span> <span class="number">0</span> <span class="number">1</span>);</span><br><span class="line">        <span class="built_in">origin</span>          (<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>);</span><br><span class="line">        omega           constant <span class="number">1.0</span>;</span><br><span class="line">        <span class="function">value           <span class="title">uniform</span> <span class="params">(<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">    OUTERWALL</span><br><span class="line">    &#123;</span><br><span class="line">        type            noSlip;</span><br><span class="line">    &#125;</span><br><span class="line">    frontAndBackPlanes</span><br><span class="line">    &#123;</span><br><span class="line">        type            empty;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="string">&quot;(PERIODIC|SHADOW_PERIODIC)&quot;</span></span><br><span class="line">    &#123;</span><br><span class="line">        type            cyclicAMI;</span><br><span class="line">        value           $internalField;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行以下命令，检查网格边界条件设置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">checkMesh</span><br></pre></td></tr></table></figure>
+
+<p>修改constant目录下的”transportProperties”文件，将nu值改为0.0002。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     <span class="number">2.0</span>;</span><br><span class="line">    format      ascii;</span><br><span class="line">    <span class="keyword">class</span>       <span class="title class_">dictionary</span>;</span><br><span class="line">    location    <span class="string">&quot;constant&quot;</span>;</span><br><span class="line">    object      transportProperties;</span><br><span class="line">&#125;</span><br><span class="line">transportModel  Newtonian;</span><br><span class="line">nu              <span class="number">0.0002</span>;</span><br></pre></td></tr></table></figure>
+
+<p>修改constant目录下的”turbulenceProperties”文件，采用层流模型。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     <span class="number">2.0</span>;</span><br><span class="line">    format      ascii;</span><br><span class="line">    <span class="keyword">class</span>       <span class="title class_">dictionary</span>;</span><br><span class="line">    object      turbulenceProperties;</span><br><span class="line">&#125;</span><br><span class="line">simulationType laminar;</span><br></pre></td></tr></table></figure>
+
+<p>system目录下，只保留”controlDict”、”fvSchemes”和”fvSolution”三个文件，其他的全部删除。</p>
+<p>修改”controlDict”文件如下，求解程序simpleFoam，从保存的最后一步开始求解，迭代步数1000步，每隔100步写入求解结果。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     <span class="number">2.0</span>;</span><br><span class="line">    format      ascii;</span><br><span class="line">    <span class="keyword">class</span>       <span class="title class_">dictionary</span>;</span><br><span class="line">    location    <span class="string">&quot;system&quot;</span>;</span><br><span class="line">    object      controlDict;</span><br><span class="line">&#125;</span><br><span class="line">application     simpleFoam;</span><br><span class="line">startFrom       latestTime;</span><br><span class="line">startTime       <span class="number">0</span>;</span><br><span class="line">stopAt          endTime;</span><br><span class="line">endTime         <span class="number">1000</span>;</span><br><span class="line">deltaT          <span class="number">1</span>;</span><br><span class="line">writeControl    timeStep;</span><br><span class="line">writeInterval   <span class="number">100</span>;</span><br><span class="line">purgeWrite      <span class="number">1</span>;</span><br><span class="line">writeFormat     ascii;</span><br><span class="line">writePrecision  <span class="number">8</span>;</span><br><span class="line">writeCompression off;</span><br><span class="line">timeFormat      general;</span><br><span class="line">timePrecision   <span class="number">8</span>;</span><br><span class="line">runTimeModifiable <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+
+<p>修改”fvSolution”文件如下。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     <span class="number">2.0</span>;</span><br><span class="line">    format      ascii;</span><br><span class="line">    <span class="keyword">class</span>       <span class="title class_">dictionary</span>;</span><br><span class="line">    location    <span class="string">&quot;system&quot;</span>;</span><br><span class="line">    object      fvSolution;</span><br><span class="line">&#125;</span><br><span class="line">solvers</span><br><span class="line">&#123;</span><br><span class="line">    p</span><br><span class="line">    &#123;</span><br><span class="line">        solver          GAMG;</span><br><span class="line">        smoother        GaussSeidel;</span><br><span class="line">        tolerance       <span class="number">1e-08</span>;</span><br><span class="line">        relTol          <span class="number">0.01</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    U</span><br><span class="line">    &#123;</span><br><span class="line">        solver          smoothSolver;</span><br><span class="line">        smoother        symGaussSeidel;</span><br><span class="line">        tolerance       <span class="number">1e-08</span>;</span><br><span class="line">        relTol          <span class="number">0.01</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">SIMPLE</span><br><span class="line">&#123;</span><br><span class="line">    nNonOrthogonalCorrectors <span class="number">0</span>;</span><br><span class="line">    residualControl</span><br><span class="line">    &#123;</span><br><span class="line">        p               <span class="number">1e-8</span>;</span><br><span class="line">        U               <span class="number">1e-8</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    pRefCell <span class="number">0</span>;</span><br><span class="line">    pRefValue <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">relaxationFactors</span><br><span class="line">&#123;</span><br><span class="line">    fields</span><br><span class="line">    &#123;</span><br><span class="line">        p               <span class="number">0.3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    equations</span><br><span class="line">    &#123;</span><br><span class="line">        U               <span class="number">0.7</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到vmfl001目录，执行以下命令（Windows下若用到tee命令，可以在Powershell里执行），运行求解并记录求解过程输出。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">simpleFoam | <span class="built_in">tee</span> simpleFoam.<span class="built_in">log</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-后处理"><a href="#5-2-后处理" class="headerlink" title="5.2 后处理"></a>5.2 后处理</h3><p>Linux下可以直接使用<code>paraFoam</code>启动ParaView进行后处理。在Windows下执行以下命令，在vmfl001目录中生成.foam文件，用ParaView打开.foam文件方能载入OpenFOAM的求解结果。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> . &gt; vmfl001.foam</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../../images/20210814-5-1.png" alt="20210814-5-1.png"></p>
+<p>以vmfl001.foam为基础，新建4个”Probe Location”，用于提取20~35mm处的切向速度。</p>
+<p><img src="/../../images/20210814-5-2.png" alt="20210814-5-2.png"></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>Center</th>
+<th>Radius</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ProbeLocation1</td>
+<td>(0.020,0,0)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>ProbeLocation2</td>
+<td>(0.025,0,0)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>ProbeLocation3</td>
+<td>(0.030,0,0)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>ProbeLocation4</td>
+<td>(0.035,0,0)</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>新建GroupDatasets，包含上述4个ProbeLocation。</p>
+<p><img src="/../../images/20210814-5-3.png" alt="20210814-5-3.png"></p>
+<p>选中该GroupDatasets，可在右侧”SpreadSheetView”窗口中看到4个点位置的切向速度值。</p>
+<p><img src="/../../images/20210814-5-4.png" alt="20210814-5-4.png"></p>
+<p>以vmfl001.foam为基础，建立”PlotOnIntersectionCurves”绘图。</p>
+<p><img src="/../../images/20210814-5-5.png" alt="20210814-5-5.png"></p>
+<p>平面方向选择Y轴正向，如图所示。</p>
+<p><img src="/../../images/20210814-5-6.png" alt="20210814-5-6.png"></p>
+<p>X轴显示变量选择”Points_X”，Y轴显示变量选择”U_Y”，如图所示。</p>
+<p><img src="/../../images/20210814-5-7.png" alt="20210814-5-7.png"></p>
+<p>右侧”LineChartView”窗口可以查看生成的曲线。</p>
+<p><img src="/../../images/20210814-5-8.png" alt="20210814-5-8.png"></p>
+<p>选择”File”、”Export Scene”，可以将曲线数据导出到csv文件中。</p>
+<p>层流方程与OpenFOAM计算结果误差对比。</p>
+<table>
+<thead>
+<tr>
+<th>半径 [mm]</th>
+<th>切向速度（理论值） [m&#x2F;s]</th>
+<th>切向速度（OpenFOAM仿真结果）[m&#x2F;s]</th>
+<th>误差 [%]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20</td>
+<td>0.0151</td>
+<td>0.0150</td>
+<td>0.66</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0.0105</td>
+<td>0.0104366</td>
+<td>0.60</td>
+</tr>
+<tr>
+<td>30</td>
+<td>0.0072</td>
+<td>0.00712633</td>
+<td>1.02</td>
+</tr>
+<tr>
+<td>35</td>
+<td>0.0046</td>
+<td>0.00452779</td>
+<td>1.57</td>
+</tr>
+</tbody></table>
+<h2 id="6-SU2验证"><a href="#6-SU2验证" class="headerlink" title="6. SU2验证"></a>6. SU2验证</h2><h3 id="6-1-求解器设置"><a href="#6-1-求解器设置" class="headerlink" title="6.1 求解器设置"></a>6.1 求解器设置</h3><p>SU2求解器配置文件vmfl001.cfg内容如下：</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% ------------- DIRECT, ADJOINT, AND LINEARIZED PROBLEM DEFINITION ------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Physical governing equations (EULER, NAVIER_STOKES,</span></span><br><span class="line"><span class="comment">%                               WAVE_EQUATION, HEAT_EQUATION, FEM_ELASTICITY,</span></span><br><span class="line"><span class="comment">%                               POISSON_EQUATION)</span></span><br><span class="line">SOLVER= INC<span class="built_in">_</span>NAVIER<span class="built_in">_</span>STOKES</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Specify turbulence model (NONE, SA)</span></span><br><span class="line">KIND<span class="built_in">_</span>TURB<span class="built_in">_</span>MODEL= NONE</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Mathematical problem (DIRECT, CONTINUOUS_ADJOINT)</span></span><br><span class="line">MATH<span class="built_in">_</span>PROBLEM= DIRECT</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Restart solution (NO, YES)</span></span><br><span class="line">RESTART<span class="built_in">_</span>SOL= NO</span><br><span class="line"></span><br><span class="line"><span class="comment">% ---------------- INCOMPRESSIBLE FLOW CONDITION DEFINITION -------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Density model within the incompressible flow solver.</span></span><br><span class="line"><span class="comment">% Options are CONSTANT (default), BOUSSINESQ, or VARIABLE. If VARIABLE,</span></span><br><span class="line"><span class="comment">% an appropriate fluid model must be selected.</span></span><br><span class="line">INC<span class="built_in">_</span>DENSITY<span class="built_in">_</span>MODEL= CONSTANT</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Solve the energy equation in the incompressible flow solver</span></span><br><span class="line">INC<span class="built_in">_</span>ENERGY<span class="built_in">_</span>EQUATION = YES</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Initial density for incompressible flows (1.2886 kg/m^3 by default)</span></span><br><span class="line">INC<span class="built_in">_</span>DENSITY<span class="built_in">_</span>INIT= 1.0</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Initial temperature for incompressible flows that include the</span></span><br><span class="line"><span class="comment">% energy equation (288.15 K by default). Value is ignored if</span></span><br><span class="line"><span class="comment">% INC_ENERGY_EQUATION is false.</span></span><br><span class="line">INC<span class="built_in">_</span>TEMPERATURE<span class="built_in">_</span>INIT= 293.15</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Initial velocity for incompressible flows (1.0,0,0 m/s by default)</span></span><br><span class="line">INC<span class="built_in">_</span>VELOCITY<span class="built_in">_</span>INIT= ( 1.0, 0.0, 0.0 )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% ---- IDEAL GAS, POLYTROPIC, VAN DER WAALS AND PENG ROBINSON CONSTANTS -------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Fluid model (STANDARD_AIR, IDEAL_GAS, VW_GAS, PR_GAS, </span></span><br><span class="line"><span class="comment">%              CONSTANT_DENSITY, INC_IDEAL_GAS)</span></span><br><span class="line">FLUID<span class="built_in">_</span>MODEL= CONSTANT<span class="built_in">_</span>DENSITY</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Specific heat at constant pressure, Cp (1004.703 J/kg*K (air)).</span></span><br><span class="line"><span class="comment">% Incompressible fluids with energy eqn. only (CONSTANT_DENSITY, INC_IDEAL_GAS).</span></span><br><span class="line">SPECIFIC<span class="built_in">_</span>HEAT<span class="built_in">_</span>CP= 1004.703</span><br><span class="line"></span><br><span class="line"><span class="comment">% --------------------------- VISCOSITY MODEL ---------------------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Viscosity model (SUTHERLAND, CONSTANT_VISCOSITY).</span></span><br><span class="line">VISCOSITY<span class="built_in">_</span>MODEL= CONSTANT<span class="built_in">_</span>VISCOSITY</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Molecular Viscosity that would be constant (1.716E-5 by default)</span></span><br><span class="line">MU<span class="built_in">_</span>CONSTANT= 0.0002</span><br><span class="line"></span><br><span class="line"><span class="comment">% --------------------------- THERMAL CONDUCTIVITY MODEL ----------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Conductivity model (CONSTANT_CONDUCTIVITY, CONSTANT_PRANDTL).</span></span><br><span class="line">CONDUCTIVITY<span class="built_in">_</span>MODEL= CONSTANT<span class="built_in">_</span>PRANDTL</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Laminar Prandtl number (0.72 (air), only for CONSTANT_PRANDTL)</span></span><br><span class="line">PRANDTL<span class="built_in">_</span>LAM= 0.72</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Turbulent Prandtl number (0.9 (air), only for CONSTANT_PRANDTL)</span></span><br><span class="line">PRANDTL<span class="built_in">_</span>TURB= 0.90</span><br><span class="line"></span><br><span class="line"><span class="comment">% ---------------------- REFERENCE VALUE DEFINITION ---------------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Reference origin for moment computation</span></span><br><span class="line">REF<span class="built_in">_</span>ORIGIN<span class="built_in">_</span>MOMENT<span class="built_in">_</span>X = 0.25</span><br><span class="line">REF<span class="built_in">_</span>ORIGIN<span class="built_in">_</span>MOMENT<span class="built_in">_</span>Y = 0.00</span><br><span class="line">REF<span class="built_in">_</span>ORIGIN<span class="built_in">_</span>MOMENT<span class="built_in">_</span>Z = 0.00</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Reference length for pitching, rolling, and yawing non-dimensional moment</span></span><br><span class="line">REF<span class="built_in">_</span>LENGTH= 1.0</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Reference area for force coefficients (0 implies automatic calculation)</span></span><br><span class="line">REF<span class="built_in">_</span>AREA= 1.0</span><br><span class="line"></span><br><span class="line"><span class="comment">% ----------------------- DYNAMIC MESH DEFINITION -----------------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Type of dynamic surface movement (NONE, DEFORMING,</span></span><br><span class="line"><span class="comment">%                       MOVING_WALL, FLUID_STRUCTURE, FLUID_STRUCTURE_STATIC,</span></span><br><span class="line"><span class="comment">%                       AEROELASTIC, EXTERNAL, EXTERNAL_ROTATION,</span></span><br><span class="line"><span class="comment">%                       AEROELASTIC_RIGID_MOTION)</span></span><br><span class="line">SURFACE<span class="built_in">_</span>MOVEMENT= MOVING<span class="built_in">_</span>WALL</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Moving wall boundary marker(s) (NONE = no marker, ignored for RIGID_MOTION)</span></span><br><span class="line">MARKER<span class="built_in">_</span>MOVING= ( INNERWALL )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Coordinates of the motion origin</span></span><br><span class="line">SURFACE<span class="built_in">_</span>MOTION<span class="built_in">_</span>ORIGIN= 0.0 0.0 0.0</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Angular velocity vector (rad/s) about the motion origin</span></span><br><span class="line">SURFACE<span class="built_in">_</span>ROTATION<span class="built_in">_</span>RATE = 0.0 0.0 1.0</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% -------------------- BOUNDARY CONDITION DEFINITION --------------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Navier-Stokes (no-slip), constant heat flux wall  marker(s) (NONE = no marker)</span></span><br><span class="line"><span class="comment">% Format: ( marker name, constant heat flux (J/m^2), ... )</span></span><br><span class="line">MARKER<span class="built_in">_</span>HEATFLUX= ( OUTERWALL, 0.0 )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Navier-Stokes (no-slip), isothermal wall marker(s) (NONE = no marker)</span></span><br><span class="line"><span class="comment">% Format: ( marker name, constant wall temperature (K), ... )</span></span><br><span class="line">MARKER<span class="built_in">_</span>ISOTHERMAL= ( INNERWALL, 313.15 )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Periodic boundary marker(s) (NONE = no marker)</span></span><br><span class="line"><span class="comment">% Format: ( periodic marker, donor marker, rotation_center_x, rotation_center_y,</span></span><br><span class="line"><span class="comment">% rotation_center_z, rotation_angle_x-axis, rotation_angle_y-axis,</span></span><br><span class="line"><span class="comment">% rotation_angle_z-axis, translation_x, translation_y, translation_z, ... )</span></span><br><span class="line"><span class="comment">% MARKER_PERIODIC= ( PERIODIC, SHADOW_PERIODIC, 0, 0, 0, 0, 0, 180, 0, 0, 0 )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Marker(s) of the surface to be plotted or designed</span></span><br><span class="line">MARKER<span class="built_in">_</span>PLOTTING= ( INNERWALL, OUTERWALL )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Marker(s) of the surface where the functional (Cd, Cl, etc.) will be evaluated</span></span><br><span class="line">MARKER<span class="built_in">_</span>MONITORING= ( NONE )</span><br><span class="line"></span><br><span class="line"><span class="comment">% ------------- COMMON PARAMETERS DEFINING THE NUMERICAL METHOD ---------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Numerical method for spatial gradients (GREEN_GAUSS, WEIGHTED_LEAST_SQUARES)</span></span><br><span class="line">NUM<span class="built_in">_</span>METHOD<span class="built_in">_</span>GRAD= WEIGHTED<span class="built_in">_</span>LEAST<span class="built_in">_</span>SQUARES</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Courant-Friedrichs-Lewy condition of the finest grid</span></span><br><span class="line">CFL<span class="built_in">_</span>NUMBER= 15.0</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Adaptive CFL number (NO, YES)</span></span><br><span class="line">CFL<span class="built_in">_</span>ADAPT= YES</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Parameters of the adaptive CFL number (factor down, factor up, CFL min value,</span></span><br><span class="line"><span class="comment">%                                        CFL max value )</span></span><br><span class="line">CFL<span class="built_in">_</span>ADAPT<span class="built_in">_</span>PARAM= ( 0.1, 2.0, 1.0, 1e10 )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Number of total iterations</span></span><br><span class="line">ITER= 10000</span><br><span class="line"></span><br><span class="line"><span class="comment">% ------------------------ LINEAR SOLVER DEFINITION ---------------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Linear solver for the implicit (or discrete adjoint) formulation (BCGSTAB, FGMRES)</span></span><br><span class="line">LINEAR<span class="built_in">_</span>SOLVER= FGMRES</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Preconditioner of the Krylov linear solver (JACOBI, LINELET, LU_SGS)</span></span><br><span class="line">LINEAR<span class="built_in">_</span>SOLVER<span class="built_in">_</span>PREC= ILU</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Linael solver ILU preconditioner fill-in level (0 by default)</span></span><br><span class="line">LINEAR<span class="built_in">_</span>SOLVER<span class="built_in">_</span>ILU<span class="built_in">_</span>FILL<span class="built_in">_</span>IN= 0</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Min error of the linear solver for the implicit formulation</span></span><br><span class="line">LINEAR<span class="built_in">_</span>SOLVER<span class="built_in">_</span>ERROR= 1E-14</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Max number of iterations of the linear solver for the implicit formulation</span></span><br><span class="line">LINEAR<span class="built_in">_</span>SOLVER<span class="built_in">_</span>ITER= 25</span><br><span class="line"></span><br><span class="line"><span class="comment">% -------------------------- MULTIGRID PARAMETERS -----------------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Multi-Grid Levels (0 = no multi-grid)</span></span><br><span class="line">MGLEVEL= 0</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Multi-grid cycle (V_CYCLE, W_CYCLE, FULLMG_CYCLE)</span></span><br><span class="line">MGCYCLE= W<span class="built_in">_</span>CYCLE</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Multi-grid pre-smoothing level</span></span><br><span class="line">MG<span class="built_in">_</span>PRE<span class="built_in">_</span>SMOOTH= ( 1, 2, 3, 3 )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Multi-grid post-smoothing level</span></span><br><span class="line">MG<span class="built_in">_</span>POST<span class="built_in">_</span>SMOOTH= ( 0, 0, 0, 0 )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Jacobi implicit smoothing of the correction</span></span><br><span class="line">MG<span class="built_in">_</span>CORRECTION<span class="built_in">_</span>SMOOTH= ( 0, 0, 0, 0 )</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Damping factor for the residual restriction</span></span><br><span class="line">MG<span class="built_in">_</span>DAMP<span class="built_in">_</span>RESTRICTION= 0.8</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Damping factor for the correction prolongation</span></span><br><span class="line">MG<span class="built_in">_</span>DAMP<span class="built_in">_</span>PROLONGATION= 0.8</span><br><span class="line"></span><br><span class="line"><span class="comment">% -------------------- FLOW NUMERICAL METHOD DEFINITION -----------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Convective numerical method (JST, LAX-FRIEDRICH, CUSP, ROE, AUSM, HLLC,</span></span><br><span class="line"><span class="comment">%                              TURKEL_PREC, MSW)</span></span><br><span class="line">CONV<span class="built_in">_</span>NUM<span class="built_in">_</span>METHOD<span class="built_in">_</span>FLOW= FDS</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Monotonic Upwind Scheme for Conservation Laws (TVD) in the flow equations.</span></span><br><span class="line"><span class="comment">%           Required for 2nd order upwind schemes (NO, YES)</span></span><br><span class="line">MUSCL<span class="built_in">_</span>FLOW= YES</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Slope limiter (NONE, VENKATAKRISHNAN, VENKATAKRISHNAN_WANG,</span></span><br><span class="line"><span class="comment">%                BARTH_JESPERSEN, VAN_ALBADA_EDGE)</span></span><br><span class="line">SLOPE<span class="built_in">_</span>LIMITER<span class="built_in">_</span>FLOW= NONE</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Coefficient for the Venkat&#x27;s limiter (upwind scheme). A larger values decrease</span></span><br><span class="line"><span class="comment">%             the extent of limiting, values approaching zero cause</span></span><br><span class="line"><span class="comment">%             lower-order approximation to the solution (0.05 by default)</span></span><br><span class="line">VENKAT<span class="built_in">_</span>LIMITER<span class="built_in">_</span>COEFF= 0.05</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Time discretization (RUNGE-KUTTA_EXPLICIT, EULER_IMPLICIT, EULER_EXPLICIT)</span></span><br><span class="line">TIME<span class="built_in">_</span>DISCRE<span class="built_in">_</span>FLOW= EULER<span class="built_in">_</span>IMPLICIT</span><br><span class="line"></span><br><span class="line"><span class="comment">% --------------------------- CONVERGENCE PARAMETERS --------------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Convergence criteria (CAUCHY, RESIDUAL)</span></span><br><span class="line">CONV<span class="built_in">_</span>CRITERIA= RESIDUAL</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Min value of the residual (log10 of the residual)</span></span><br><span class="line">CONV<span class="built_in">_</span>RESIDUAL<span class="built_in">_</span>MINVAL= -14</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Start convergence criteria at iteration number</span></span><br><span class="line">CONV<span class="built_in">_</span>STARTITER= 10</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Number of elements to apply the criteria</span></span><br><span class="line">CONV<span class="built_in">_</span>CAUCHY<span class="built_in">_</span>ELEMS= 100</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Epsilon to control the series convergence</span></span><br><span class="line">CONV<span class="built_in">_</span>CAUCHY<span class="built_in">_</span>EPS= 1E-14</span><br><span class="line"></span><br><span class="line"><span class="comment">% ------------------------- INPUT/OUTPUT INFORMATION --------------------------%</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Mesh input file</span></span><br><span class="line">MESH<span class="built_in">_</span>FILENAME= VMFL001<span class="built_in">_</span>rot<span class="built_in">_</span>conc<span class="built_in">_</span>cyl<span class="built_in">_</span>2D.cgns</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Mesh input file format (SU2, CGNS, NETCDF_ASCII)</span></span><br><span class="line">MESH<span class="built_in">_</span>FORMAT= CGNS</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Mesh output file</span></span><br><span class="line">MESH<span class="built_in">_</span>OUT<span class="built_in">_</span>FILENAME= mesh<span class="built_in">_</span>out.cgns</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Restart flow input file</span></span><br><span class="line">SOLUTION<span class="built_in">_</span>FILENAME= solution<span class="built_in">_</span>flow.dat</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Restart adjoint input file</span></span><br><span class="line">SOLUTION<span class="built_in">_</span>ADJ<span class="built_in">_</span>FILENAME= solution<span class="built_in">_</span>adj.dat</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output file format (PARAVIEW, TECPLOT, STL)</span></span><br><span class="line">TABULAR<span class="built_in">_</span>FORMAT= CSV</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output file convergence history (w/o extension) </span></span><br><span class="line">CONV<span class="built_in">_</span>FILENAME= history</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output file restart flow</span></span><br><span class="line">RESTART<span class="built_in">_</span>FILENAME= restart<span class="built_in">_</span>flow.dat</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output file restart adjoint</span></span><br><span class="line">RESTART<span class="built_in">_</span>ADJ<span class="built_in">_</span>FILENAME= restart<span class="built_in">_</span>adj.dat</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output file flow (w/o extension) variables</span></span><br><span class="line">VOLUME<span class="built_in">_</span>FILENAME= flow</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output file adjoint (w/o extension) variables</span></span><br><span class="line">VOLUME<span class="built_in">_</span>ADJ<span class="built_in">_</span>FILENAME= adjoint</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output objective function gradient (using continuous adjoint)</span></span><br><span class="line">GRAD<span class="built_in">_</span>OBJFUNC<span class="built_in">_</span>FILENAME= of<span class="built_in">_</span>grad.dat</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output file surface flow coefficient (w/o extension)</span></span><br><span class="line">SURFACE<span class="built_in">_</span>FILENAME= surface<span class="built_in">_</span>flow</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Output file surface adjoint coefficient (w/o extension)</span></span><br><span class="line">SURFACE<span class="built_in">_</span>ADJ<span class="built_in">_</span>FILENAME= surface<span class="built_in">_</span>adjoint</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Writing solution file frequency</span></span><br><span class="line">OUTPUT<span class="built_in">_</span>WRT<span class="built_in">_</span>FREQ= 250</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Writing convergence history frequency</span></span><br><span class="line">SCREEN<span class="built_in">_</span>WRT<span class="built_in">_</span>FREQ<span class="built_in">_</span>INNER= 1</span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Screen output</span></span><br><span class="line">SCREEN<span class="built_in">_</span>OUTPUT= (INNER<span class="built_in">_</span>ITER, WALL<span class="built_in">_</span>TIME,  RMS<span class="built_in">_</span>PRESSURE, RMS<span class="built_in">_</span>VELOCITY-X, RMS<span class="built_in">_</span>VELOCITY-Y)</span><br></pre></td></tr></table></figure>
+
+<p>确保vmfl001.cfg和网格文件VMFL001_rot_conc_cyl_2D.cgns在同一目录，执行以下命令（Windows下若用到tee命令，可以在Powershell里执行），运行求解并记录求解过程输出。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SU2_CFD vmfl001.cfg | <span class="built_in">tee</span> vmfl001.log</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-后处理"><a href="#6-2-后处理" class="headerlink" title="6.2 后处理"></a>6.2 后处理</h3><p>用ParaView打开求解输出的flow.vtu文件，处理过程同5.2。</p>
+<p><img src="/../../images/20210814-6-1.png" alt="20210814-6-1.png"></p>
+<p>层流方程与SU2计算结果误差对比。</p>
+<table>
+<thead>
+<tr>
+<th>半径 [mm]</th>
+<th>切向速度（理论值） [m&#x2F;s]</th>
+<th>切向速度（SU2仿真结果）[m&#x2F;s]</th>
+<th>误差 [%]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20</td>
+<td>0.0151</td>
+<td>0.0150846</td>
+<td>0.10</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0.0105</td>
+<td>0.0105093</td>
+<td>0.09</td>
+</tr>
+<tr>
+<td>30</td>
+<td>0.0072</td>
+<td>0.00716493</td>
+<td>0.49</td>
+</tr>
+<tr>
+<td>35</td>
+<td>0.0046</td>
+<td>0.00453409</td>
+<td>1.43</td>
+</tr>
+</tbody></table>
+<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>横向对比来看，CFX求解精度最高；其次是SU2；然后是Fluent；OpenFOAM精度和Fluent相差无几，但求解速度更快；STAR-CCM+精度最差。</p>
+<table>
+<thead>
+<tr>
+<th>半径 [mm]</th>
+<th>Fluent求解误差 [%]</th>
+<th>CFX求解误差 [%]</th>
+<th>STAR-CCM+求解误差 [%]</th>
+<th>OpenFOAM求解误差 [%]</th>
+<th>SU2求解误差 [%]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20</td>
+<td>0.48</td>
+<td>0.05</td>
+<td>1.50</td>
+<td>0.66</td>
+<td>0.10</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0.34</td>
+<td>0.27</td>
+<td>1.61</td>
+<td>0.60</td>
+<td>0.09</td>
+</tr>
+<tr>
+<td>30</td>
+<td>1.06</td>
+<td>0.24</td>
+<td>6.69</td>
+<td>1.02</td>
+<td>0.49</td>
+</tr>
+<tr>
+<td>35</td>
+<td>2.23</td>
+<td>1.15</td>
+<td>3.65</td>
+<td>1.57</td>
+<td>1.43</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/03/26/%E7%9F%A5%E4%B9%8E%E6%97%A7%E6%96%87%E7%AB%A0/%E6%B1%82%E8%A7%A3%E5%99%A8%E9%AA%8C%E8%AF%81%E5%AF%B9%E6%AF%94%E2%80%94%E2%80%94%E6%97%8B%E8%BD%AC%E5%92%8C%E9%9D%99%E6%AD%A2%E5%90%8C%E5%BF%83%E5%9C%86%E6%9F%B1%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B1%82%E6%B5%81/" data-id="cm8orhqqy0003q0098lqz537p" data-title="求解器验证对比——旋转和静止同心圆柱之间的层流" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/26/%E7%9F%A5%E4%B9%8E%E6%97%A7%E6%96%87%E7%AB%A0/%E8%B6%85%E7%AE%97%E5%B9%B3%E5%8F%B0%E9%83%A8%E7%BD%B2STAR-CCM+/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          超算平台部署STAR-CCM+
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/26/%E7%9F%A5%E4%B9%8E%E6%97%A7%E6%96%87%E7%AB%A0/%E6%89%92%E4%B8%80%E6%89%92%E5%8D%81%E6%B2%A3%E7%A7%91%E6%8A%80%E5%9B%BD%E4%BA%A7CFD%E8%BD%AF%E4%BB%B6%E2%80%94%E2%80%94QFlux%E5%8F%8AQMesh/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">扒一扒十沣科技国产CFD软件——QFlux及QMesh</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">三月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E5%AE%89%E8%A3%85Ansys2025R1/">Ubuntu24.04安装Ansys2025R1</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu24.04%E6%90%AD%E5%BB%BASamba%E6%9C%8D%E5%8A%A1%E5%99%A8/">Ubuntu24.04搭建Samba服务器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85SIMULIA2024/">Ubuntu安装SIMULIA2024</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Hyper-V%E8%99%9A%E6%8B%9F%E4%BA%A4%E6%8D%A2%E6%9C%BANAT%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">Hyper-V虚拟交换机NAT设置静态IP</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/26/Linux/Ubuntu%E5%AE%89%E8%A3%85Slurm/">Ubuntu安装Slurm</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Andrew Moa<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
